@@ -22,7 +22,7 @@ param apis array = [
 param apimName string
 param AppInsightsName string = ''
 
-resource apim 'Microsoft.ApiManagement/service@2021-01-01-preview' existing = {
+resource apim 'Microsoft.ApiManagement/service@2022-09-01-preview' existing = {
   name: apimName
 }
 
@@ -31,7 +31,7 @@ resource AppInsights 'Microsoft.Insights/components@2020-02-02' existing = if(!e
 }
 
 @description('Create a new logger if one wasnt passed in')
-resource ApimLogger 'Microsoft.ApiManagement/service/loggers@2021-04-01-preview' = if(empty((apimLoggerId))) {
+resource ApimLogger 'Microsoft.ApiManagement/service/loggers@2022-09-01-preview' = if(empty((apimLoggerId))) {
   name: 'API-Logger'
   parent: apim
   properties: {
@@ -56,7 +56,7 @@ var ApiLoggingProperties = {
   }
 }
 
-resource apimService 'Microsoft.ApiManagement/service/apis@2021-04-01-preview' = {
+resource apimService 'Microsoft.ApiManagement/service/apis@2022-09-01-preview' = {
   name: servicename
   parent: apim
   properties: {
@@ -71,13 +71,13 @@ resource apimService 'Microsoft.ApiManagement/service/apis@2021-04-01-preview' =
 }
 output serviceName string = apimService.name
 
-resource diags 'Microsoft.ApiManagement/service/apis/diagnostics@2021-04-01-preview' = {
+resource diags 'Microsoft.ApiManagement/service/apis/diagnostics@2022-09-01-preview' = {
   name: 'applicationinsights'
   parent: apimService
   properties: ApiLoggingProperties
 }
 
-resource apiMethod 'Microsoft.ApiManagement/service/apis/operations@2021-04-01-preview' = [for api in apis: {
+resource apiMethod 'Microsoft.ApiManagement/service/apis/operations@2022-09-01-preview' = [for api in apis: {
   name: api.name
   parent: apimService
   properties: {
@@ -98,7 +98,7 @@ module webTest '../foundation/appinsightswebtest.bicep' = [for api in apis: if(!
   }
 }]
 
-resource cache 'Microsoft.ApiManagement/service/apis/operations/policies@2021-04-01-preview' = [for (api, index) in apis: if(contains(api, 'enableCache') && api.enableCache) {
+resource cache 'Microsoft.ApiManagement/service/apis/operations/policies@2022-09-01-preview' = [for (api, index) in apis: if(contains(api, 'enableCache') && api.enableCache) {
   name: 'policy'
   parent: apiMethod[index]
   properties: {

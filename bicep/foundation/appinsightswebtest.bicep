@@ -13,7 +13,7 @@ resource AppInsights 'Microsoft.Insights/components@2020-02-02' existing = {
   name: AppInsightsName
 }
 
-resource urlTest 'Microsoft.Insights/webtests@2018-05-01-preview' = {
+resource urlTest 'Microsoft.Insights/webtests@2022-06-15' = {
   name: Name
   location: location
   kind: 'ping'

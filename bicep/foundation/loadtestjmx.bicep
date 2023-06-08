@@ -31,6 +31,6 @@ resource AddLoadTestFromJmx 'Microsoft.Resources/deploymentScripts@2020-10-01' =
 output pwshResultObj object = AddLoadTestFromJmx.properties.outputs
 
 param UaiRunnerName string = 'LoadTestHelper'
-resource loadTestRunner 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' existing = {
+resource loadTestRunner 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = {
   name: UaiRunnerName
 }

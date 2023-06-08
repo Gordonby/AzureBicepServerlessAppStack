@@ -42,14 +42,14 @@ param AppInsightsName string = ''
 
 var apiManagementServiceName = 'apim-${nameSeed}-${substring(sku,0,3)}-${uniqueString(resourceGroup().id, nameSeed)}'
 
-resource apim 'Microsoft.ApiManagement/service@2021-04-01-preview' = {
+resource apim 'Microsoft.ApiManagement/service@2022-09-01-preview' = {
   name: apiManagementServiceName
   location: location
   sku: {
     name: sku
     capacity: sku=='Consumption' ? 0 :  skuCount
   }
-  zones: ((length(availabilityZones) == 0 || sku!='Premium') ? json('null') : availabilityZones)
+  zones: ((length(availabilityZones) == 0 || sku!='Premium') ? null : availabilityZones)
   identity: {
     type: 'UserAssigned'
     userAssignedIdentities: {
@@ -63,15 +63,16 @@ resource apim 'Microsoft.ApiManagement/service@2021-04-01-preview' = {
 }
 output ApimName string = apim.name
 
-resource apimPolicy 'Microsoft.ApiManagement/service/policies@2019-12-01' = {
-  name: '${apim.name}/policy'
+resource apimPolicy 'Microsoft.ApiManagement/service/policies@2022-09-01-preview' = {
+  name: 'policy'
+  parent: apim
   properties:{
     format: 'rawxml'
     value: '<policies><inbound /><backend><forward-request /></backend><outbound /><on-error /></policies>'
   }
 }
 
-resource apiUai 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+resource apiUai 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
   name: 'id-apim-${nameSeed}'
   location: location
 }
@@ -105,8 +106,9 @@ module apimRedisCacheConfig 'apim-cacheconfig.bicep' = if(useRedisCache) {
 
 // Create Logger and link logger
 param createLogger bool = true
-resource apimLogger 'Microsoft.ApiManagement/service/loggers@2019-12-01' = if(createLogger) {
-  name: '${apim.name}/${apim.name}-logger'
+resource apimLogger 'Microsoft.ApiManagement/service/loggers@2022-09-01-preview' = if(createLogger) {
+  name: '${apim.name}-logger'
+  parent: apim
   properties:{
     resourceId: AppInsights.id
     loggerType: 'applicationInsights'

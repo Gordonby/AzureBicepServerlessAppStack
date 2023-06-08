@@ -13,7 +13,7 @@ param location string = resourceGroup().location
 var kvRawName = replace('kv-${nameSeed}-${uniqueString(resourceGroup().id, nameSeed)}','-','')
 var kvName = length(kvRawName) > 24 ? substring(kvRawName,0,23) : kvRawName
 
-resource keyVault 'Microsoft.KeyVault/vaults@2019-09-01' =  {
+resource keyVault 'Microsoft.KeyVault/vaults@2023-02-01' =  {
   name: kvName
   location: location
   properties: {

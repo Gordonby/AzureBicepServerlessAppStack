@@ -27,12 +27,12 @@ param AppIdentityRG string = resourceGroup().name //In the next version of Bicep
 @description('The principalId of a user who can also be provided RBAC access to CosmosDb')
 param UserRolePrincipalId string = ''
 
-resource fnAppUai 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' existing = if(!empty(AppIdentityName)) {
+resource fnAppUai 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if(!empty(AppIdentityName)) {
   name: AppIdentityName
   scope:  resourceGroup(AppIdentityRG)
 }
 
-resource cosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2021-07-01-preview' = {
+resource cosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' = {
   kind: 'GlobalDocumentDB'
   name: databaseAccountName
   location: location
@@ -129,11 +129,11 @@ output accountName string = cosmosDbAccount.name
 param keyvaultName string = ''
 param keyvaultConnectionStringSecretName string = ''
 
-resource keyVault 'Microsoft.KeyVault/vaults@2019-09-01' existing = if (!empty(keyvaultName) && !empty(keyvaultConnectionStringSecretName)) {
+resource keyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(keyvaultName) && !empty(keyvaultConnectionStringSecretName)) {
   name: keyvaultName
 }
 
-resource secret 'Microsoft.KeyVault/vaults/secrets@2019-09-01' = if (!empty(keyvaultName) && !empty(keyvaultConnectionStringSecretName)) {
+resource secret 'Microsoft.KeyVault/vaults/secrets@2023-02-01' = if (!empty(keyvaultName) && !empty(keyvaultConnectionStringSecretName)) {
   name: keyvaultConnectionStringSecretName
   parent: keyVault
   properties: {

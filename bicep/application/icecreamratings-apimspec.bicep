@@ -16,12 +16,12 @@ param requireSubscriptionForApis bool = true
 param location string = resourceGroup().location
 
 @description('Creating a proper reference to APIM')
-resource apim 'Microsoft.ApiManagement/service@2021-01-01-preview' existing = {
+resource apim 'Microsoft.ApiManagement/service@2022-09-01-preview' existing = {
   name: apimName
 }
 
 @description('[LOOP] Creating all products from an array')
-resource products 'Microsoft.ApiManagement/service/products@2019-12-01' = [ for product in apimProductNames : {
+resource products 'Microsoft.ApiManagement/service/products@2022-09-01-preview' = [ for product in apimProductNames : {
   name: replace(product,' ', '')
   parent: apim
   properties: {
@@ -115,7 +115,7 @@ var ApiLoggingProperties = {
   }
 }
 
-resource RatingsApi 'Microsoft.ApiManagement/service/apis@2021-04-01-preview' = {
+resource RatingsApi 'Microsoft.ApiManagement/service/apis@2022-09-01-preview' = {
   name: 'Ratings'
   parent: apim
   properties: {
@@ -129,13 +129,13 @@ resource RatingsApi 'Microsoft.ApiManagement/service/apis@2021-04-01-preview' = 
   }
 }
 
-resource RatingsApiDiags 'Microsoft.ApiManagement/service/apis/diagnostics@2021-04-01-preview' = {
+resource RatingsApiDiags 'Microsoft.ApiManagement/service/apis/diagnostics@2022-09-01-preview' = {
   name: 'applicationinsights'
   parent: RatingsApi
   properties: ApiLoggingProperties
 }
 
-resource GetRatingsMethod 'Microsoft.ApiManagement/service/apis/operations@2021-04-01-preview' = {
+resource GetRatingsMethod 'Microsoft.ApiManagement/service/apis/operations@2022-09-01-preview' = {
   name: 'GetRatings'
   parent: RatingsApi
   properties: {
@@ -153,7 +153,7 @@ resource GetRatingsMethod 'Microsoft.ApiManagement/service/apis/operations@2021-
   }
 }
 
-resource GetRatingMethod 'Microsoft.ApiManagement/service/apis/operations@2021-04-01-preview' = {
+resource GetRatingMethod 'Microsoft.ApiManagement/service/apis/operations@2022-09-01-preview' = {
   name: 'GetRating'
   parent: RatingsApi
   properties: {
@@ -171,7 +171,7 @@ resource GetRatingMethod 'Microsoft.ApiManagement/service/apis/operations@2021-0
   }
 }
 
-resource RatingsAdminApi 'Microsoft.ApiManagement/service/apis@2021-04-01-preview' = {
+resource RatingsAdminApi 'Microsoft.ApiManagement/service/apis@2022-09-01-preview' = {
   name: 'RatingsAdmin'
   parent: apim
   properties: {
@@ -185,7 +185,7 @@ resource RatingsAdminApi 'Microsoft.ApiManagement/service/apis@2021-04-01-previe
   }
 }
 
-resource CreateRatingsMethod 'Microsoft.ApiManagement/service/apis/operations@2021-04-01-preview' = {
+resource CreateRatingsMethod 'Microsoft.ApiManagement/service/apis/operations@2022-09-01-preview' = {
   name: 'CreateRatings'
   parent: RatingsAdminApi
   properties: {

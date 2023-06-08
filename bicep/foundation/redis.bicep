@@ -6,7 +6,7 @@ param redisName string =  'redis-${nameSeed}'
 
 param location string =resourceGroup().location
 
-resource redis 'Microsoft.Cache/redis@2020-12-01' = {
+resource redis 'Microsoft.Cache/redis@2022-06-01' = {
   name:redisName
   location: location
   properties: {

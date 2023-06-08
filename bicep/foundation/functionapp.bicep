@@ -31,7 +31,7 @@ var coreAppSettings = [
   }
   {
     name: 'AzureWebJobsStorage'
-    value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};EndpointSuffix=${environment().suffixes.storage};AccountKey=${listKeys(storageAccount.id, storageAccount.apiVersion).keys[0].value}'
+    value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};EndpointSuffix=${environment().suffixes.storage};AccountKey=${storageAccount.listKeys().keys[0].value}'
   }
   {
     name: 'FUNCTIONS_EXTENSION_VERSION'
@@ -43,7 +43,7 @@ var coreAppSettings = [
   }
   {
     name: 'WEBSITE_CONTENTAZUREFILECONNECTIONSTRING'
-    value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};EndpointSuffix=${environment().suffixes.storage};AccountKey=${listKeys(storageAccount.id, storageAccount.apiVersion).keys[0].value}'
+    value: 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};EndpointSuffix=${environment().suffixes.storage};AccountKey=${storageAccount.listKeys().keys[0].value}'
   }
 ]
 
@@ -59,7 +59,7 @@ var siteConfig = {
   ] : []
 }
 
-resource functionApp 'Microsoft.Web/sites@2021-02-01' = {
+resource functionApp 'Microsoft.Web/sites@2022-09-01' = {
   name: webAppName
   location: location
   kind: 'functionapp'
@@ -81,7 +81,7 @@ output appUrl string = functionApp.properties.defaultHostName
 output appName string = functionApp.name
 
 var deploymentSlotName = 'staging'
-resource slot 'Microsoft.Web/sites/slots@2021-02-01' = {
+resource slot 'Microsoft.Web/sites/slots@2022-09-01' = {
   name: deploymentSlotName
   location: location
   properties:{
@@ -92,11 +92,11 @@ resource slot 'Microsoft.Web/sites/slots@2021-02-01' = {
   parent: functionApp
 }
 
-resource fnAppUai 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' existing = {
+resource fnAppUai 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = {
   name: fnAppIdentityName
 }
 
-resource webAppConfig 'Microsoft.Web/sites/config@2019-08-01' = {
+resource webAppConfig 'Microsoft.Web/sites/config@2022-09-01' = {
   parent: functionApp
   name: 'web'
   properties: {
@@ -104,7 +104,7 @@ resource webAppConfig 'Microsoft.Web/sites/config@2019-08-01' = {
   }
 }
 
-resource webAppLogging 'Microsoft.Web/sites/config@2021-02-01' = {
+resource webAppLogging 'Microsoft.Web/sites/config@2022-09-01' = {
   parent: functionApp
   name: 'logs'
   properties: {
@@ -125,7 +125,7 @@ resource webAppLogging 'Microsoft.Web/sites/config@2021-02-01' = {
 
 param repoUrl string = ''
 param repoBranchProduction string = 'main'
-resource codeDeploy 'Microsoft.Web/sites/sourcecontrols@2021-01-15' = if (!empty(repoUrl)) {
+resource codeDeploy 'Microsoft.Web/sites/sourcecontrols@2022-09-01' = if (!empty(repoUrl)) {
   parent: functionApp
   name: 'web'
   properties: {
@@ -136,7 +136,7 @@ resource codeDeploy 'Microsoft.Web/sites/sourcecontrols@2021-01-15' = if (!empty
 }
 
 param repoBranchStaging string = ''
-resource slotCodeDeploy 'Microsoft.Web/sites/slots/sourcecontrols@2021-02-01' = if (!empty(repoUrl) && !empty(repoBranchStaging)) {
+resource slotCodeDeploy 'Microsoft.Web/sites/slots/sourcecontrols@2022-09-01' = if (!empty(repoUrl) && !empty(repoBranchStaging)) {
   parent: slot
   name: 'web'
   properties: {
@@ -146,7 +146,7 @@ resource slotCodeDeploy 'Microsoft.Web/sites/slots/sourcecontrols@2021-02-01' = 
   }
 }
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2021-06-01' = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
   name: storageAccountName
   location: location
   kind: 'StorageV2'
@@ -155,7 +155,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-06-01' = {
   }
 }
 
-resource hostingPlan 'Microsoft.Web/serverfarms@2021-01-15' = {
+resource hostingPlan 'Microsoft.Web/serverfarms@2022-09-01' = {
   name: hostingPlanName
   location: location
   sku: {

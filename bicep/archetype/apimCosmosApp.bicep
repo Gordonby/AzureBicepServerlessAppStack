@@ -36,7 +36,7 @@ var webAppName = 'app-${appName}-${uniqueString(resourceGroup().id, appName)}'
 @description('The Azure Managed Identity Name assigned to the FunctionApp')
 param fnAppIdentityName string = 'id-app-${appName}-${uniqueString(resourceGroup().id, appName)}'
 
-resource fnAppUai 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+resource fnAppUai 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
   name: fnAppIdentityName
   location: location
 }
